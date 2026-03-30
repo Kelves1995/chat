@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Kell 😏 | Modo tela cheia</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      background: #0b141a;
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Container do chat – totalmente responsivo, ocupa toda a altura e largura possível */
+    .chat {
+      width: 100%;
+      height: 100%;
+      max-width: 550px;          /* Largura máxima confortável em tablets/desktop */
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 0;
+      box-shadow: none;
+      transition: all 0.2s ease;
+    }
+
+    /* Em telas maiores centraliza e dá aspecto de card, mas ainda aproveita altura total */
+    @media (min-width: 700px) {
+      .chat {
+        height: 95vh;
+        max-height: 90vh;
+        border-radius: 28px;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4);
+        margin: auto;
+      }
+    }
+
+    /* Para celulares muito pequenos, manter bordas suaves, mas sem quebrar layout */
+    @media (max-width: 550px) {
+      .chat {
+        border-radius: 0;
+        max-width: 100%;
+      }
+    }
+
+    /* HEADER */
+    .header {
+      background: #202c33;
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      backdrop-filter: blur(2px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .header img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #2a3942;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .header div:first-of-type {
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: -0.2px;
+    }
+
+    .status {
+      font-size: 0.7rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    /* ÁREA DE MENSAGENS */
+    .messages {
+      flex: 1;
+      padding: 16px 12px;
+      overflow-y: auto;
+      background: #0b141a;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      scroll-behavior: smooth;
+    }
+
+    /* BOLHAS DE MENSAGEM */
+    .msg {
+      padding: 8px 12px;
+      border-radius: 18px;
+      margin: 4px 0;
+      max-width: 85%;
+      width: fit-content;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      position: relative;
+      animation: fadeIn 0.25s ease-out;
+      word-break: break-word;
+    }
+
+    .bot {
+      background: #202c33;
+      color: #e9edef;
+      border-bottom-left-radius: 5px;
+      align-self: flex-start;
+    }
+
+    .user {
+      background: #005c4b;
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 5px;
+      align-self: flex-end;
+    }
+
+    .time {
+      font-size: 0.65rem;
+      opacity: 0.65;
+      margin-top: 4px;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .checks {
+      font-size: 0.7rem;
+      letter-spacing: -0.5px;
+      font-weight: 500;
+    }
+
+    /* Indicador de digitação */
+    .typingDots::after {
+      content: ' .';
+      animation: dots 1.5s infinite steps(1);
+      font-weight: bold;
+    }
+
+    @keyframes dots {
+      0%, 25% { content: ' .'; }
+      50% { content: ' ..'; }
+      75%, 100% { content: ' ...'; }
+    }
+
+    /* PAINEL DE BOTÕES (ações) */
+    .actions {
+      padding: 12px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #202c33;
+      flex-shrink: 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    button {
+      flex: 1 1 calc(50% - 10px);
+      min-width: 130px;
+      padding: 12px 8px;
+      border: none;
+      border-radius: 28px;
+      background: #25d366;
+      color: #0a2b1f;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      font-family: inherit;
+    }
+
+    button:active {
+      transform: scale(0.97);
+      background: #20bd5c;
+    }
+
+    /* Scrollbar personalizada (moderna) */
+    .messages::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: #3a4a53;
+      border-radius: 20px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Ajustes para telas muito estreitas */
+    @media (max-width: 450px) {
+      .msg {
+        max-width: 90%;
+        font-size: 0.9rem;
+        padding: 7px 12px;
+      }
+      button {
+        padding: 10px 6px;
+        font-size: 0.85rem;
+        min-width: 115px;
+      }
+      .header img {
+        width: 38px;
+        height: 38px;
+      }
+      .header div:first-of-type {
+        font-size: 1rem;
+      }
+      .actions {
+        padding: 10px 12px;
+        gap: 8px;
+      }
+    }
+
+    /* Ajuste para tablets ou landscape */
+    @media (min-width: 800px) and (max-width: 1100px) {
+      .chat {
+        max-width: 480px;
+      }
+      .msg {
+        max-width: 78%;
+      }
+    }
+
+    /* Garantir que o body não role e sim só o chat */
+    body {
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat">
+  <div class="header">
+    <img src="kell.jpg" alt="kell" onerror="this.src='https://ui-avatars.com/api/?background=25d366&color=fff&bold=true&size=44&name=K';">
+    <div>
+      <div>negão_kell 😏</div>
+      <div class="status" id="status">online</div>
+    </div>
+  </div>
+
+  <div class="messages" id="messages"></div>
+  <div class="actions" id="actions"></div>
+</div>
+
+<audio id="msgSound" preload="auto">
+  <source src="https://www.soundjay.com/buttons/sounds/button-3.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // ========== LÓGICA ORIGINAL COMPLETA + RESPONSIVO (sem quebras) ==========
+  let interesse = parseInt(localStorage.getItem("interesse")) || 0;
+  let currentStep = localStorage.getItem("step") || "start";
+
+  function getTime() {
+    const d = new Date();
+    return d.getHours().toString().padStart(2, '0') + ":" +
+           d.getMinutes().toString().padStart(2, '0');
+  }
+
+  function delay(text = "") {
+    return 600 + (text.length * 35) + Math.random() * 800;
+  }
+
+  function playSound() {
+    const sound = document.getElementById("msgSound");
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play().catch(e => console.log("áudio bloqueado pelo navegador"));
+    }
+  }
+
+  function setStatus(text) {
+    const statusDiv = document.getElementById("status");
+    if (statusDiv) statusDiv.innerText = text;
+  }
+
+  function scrollDown() {
+    const messagesDiv = document.getElementById("messages");
+    if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function addMsg(text, type) {
+    const messagesDiv = document.getElementById("messages");
+    if (!messagesDiv) return;
+
+    const msg = document.createElement("div");
+    msg.className = "msg " + type;
+
+    const content = document.createElement("div");
+    content.innerText = typeof text === "function" ? text() : text;
+
+    const meta = document.createElement("div");
+    meta.className = "time";
+
+    if (type === "user") {
+      meta.innerHTML = getTime() + ' <span class="checks">✓✓</span>';
+    } else {
+      meta.innerText = getTime();
+    }
+
+    msg.appendChild(content);
+    msg.appendChild(meta);
+    messagesDiv.appendChild(msg);
+
+    playSound();
+    scrollDown();
+  }
+
+  function typing(callback, text = "") {
+    setStatus("a escrever");
+    const messagesDiv = document.getElementById("messages");
+    if (!messagesDiv) return;
+
+    const typingMsg = document.createElement("div");
+    typingMsg.className = "msg bot typingDots";
+    typingMsg.innerText = "a escrever";
+    messagesDiv.appendChild(typingMsg);
+    scrollDown();
+
+    setTimeout(() => {
+      if (typingMsg && typingMsg.remove) typingMsg.remove();
+      setStatus("online");
+      callback();
+    }, delay(text));
+  }
+
+  function gerarMensagem(finalTipo) {
+    let msg = "";
+    if (finalTipo === "forte") {
+      if (interesse >= 6) {
+        msg = "Ok... agora fiquei mesmo curioso contigo 😏";
+      } else {
+        msg = "Isto ficou interessante... quero ver até onde vai 😌";
+      }
+    }
+    if (finalTipo === "fraco") {
+      if (interesse <= 1) {
+        msg = "Não sei porque mas ainda fiquei a pensar nisto...";
+      } else {
+        msg = "Talvez não devia... mas estou aqui 😏";
+      }
+    }
+    return encodeURIComponent(msg);
+  }
+
+  const chatFlow = {
+    start: {
+      text: "Sabia que ias abrir isto… 😏",
+      options: [
+        { label: "Como sabias?", next: "curiosidade", score: +1 },
+        { label: "Foi sem querer", next: "provocar", score: 0 }
+      ]
+    },
+    curiosidade: {
+      text: () => interesse > 2 ? "Porque já estás envolvida…" : "Porque ninguém resiste muito tempo.",
+      options: [
+        { label: "Talvez 😏", next: "envolvida", score: +2 },
+        { label: "Só curiosidade", next: "neutra", score: 0 }
+      ]
+    },
+    provocar: {
+      text: "Sem querer? não acredito muito nisso.",
+      options: [
+        { label: "Então acredita", next: "envolvida", score: +1 },
+        { label: "Ok, foi curiosidade", next: "curiosidade", score: +1 }
+      ]
+    },
+    envolvida: {
+      text: "Agora sim… já estás a entrar no jogo.",
+      options: [
+        { label: "E agora?", next: "intenso", score: +2 },
+        { label: "Calma", next: "neutra", score: -1 }
+      ]
+    },
+    neutra: {
+      text: "Ainda estás a tentar manter controlo…",
+      options: [
+        { label: "Sempre", next: "controlo", score: 0 },
+        { label: "Nem sempre", next: "intenso", score: +1 }
+      ]
+    },
+    controlo: {
+      text: "Vamos ver até quando 😌",
+      options: [
+        { label: "Testa-me", next: "intenso", score: +2 }
+      ]
+    },
+    intenso: {
+      text: () => interesse >= 4 ? "Agora já não estás só a brincar." : "Isto começa leve… e depois prende.",
+      options: [
+        { label: "Estou dentro", next: "finalCheck", score: +2 },
+        { label: "Não sei", next: "saida", score: -1 }
+      ]
+    },
+    saida: {
+      text: "Podes sair… mas vais voltar a pensar nisto.",
+      options: [
+        { label: "Voltar", next: "curiosidade", score: +1 }
+      ]
+    },
+    finalCheck: {
+      text: "Última pergunta… impulso ou intenção?",
+      options: [
+        { label: "Impulso", action: "fraco" },
+        { label: "Intenção 😏", action: "forte" }
+      ]
+    }
+  };
+
+  function showOptions(options) {
+    const box = document.getElementById("actions");
+    if (!box) return;
+    box.innerHTML = "";
+
+    options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.innerText = opt.label;
+
+      btn.onclick = () => {
+        interesse += opt.score || 0;
+        localStorage.setItem("interesse", interesse);
+
+        addMsg(opt.label, "user");
+
+        if (opt.action) {
+          final(opt.action);
+          return;
+        }
+
+        localStorage.setItem("step", opt.next);
+        const nextText = chatFlow[opt.next].text;
+        typing(() => loadStep(opt.next),
+          typeof nextText === "function" ? nextText() : nextText
+        );
+      };
+      box.appendChild(btn);
+    });
+  }
+
+  function final(type) {
+    typing(() => {
+      if (type === "forte" && interesse >= 5) {
+        addMsg("Agora sim… isso muda tudo.", "bot");
+        setTimeout(() => {
+          addMsg("Fala comigo fora daqui 😏", "bot");
+          setTimeout(() => {
+            const numero = "2399931431"; // Número configurado
+            const texto = gerarMensagem(type);
+            window.open(`https://wa.me/${numero}?text=${texto}`, "_blank");
+          }, 1500);
+        }, 1000);
+      } else {
+        addMsg("Ainda estás a jogar pelo seguro…", "bot");
+        setTimeout(() => {
+          addMsg("Talvez outro dia descubras mais.", "bot");
+        }, 1000);
+      }
+    });
+  }
+
+  function loadStep(step) {
+    const data = chatFlow[step];
+    if (!data) return;
+
+    typing(() => {
+      addMsg(data.text, "bot");
+      showOptions(data.options);
+    }, typeof data.text === "function" ? data.text() : data.text);
+  }
+
+  // Status flutuante
+  setInterval(() => {
+    if (Math.random() > 0.7) {
+      setStatus("online");
+    }
+  }, 4000);
+
+  // Iniciar conversa com pequeno atraso garantindo DOM
+  setTimeout(() => {
+    if (currentStep && chatFlow[currentStep]) {
+      loadStep(currentStep);
+    } else {
+      loadStep("start");
+    }
+  }, 500);
+</script>
+</body>
+</html>
