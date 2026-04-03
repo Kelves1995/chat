@@ -1,297 +1,655 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Não devias ter entrado 😈</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Kell_negão · Criativo & Picante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-body{
-  margin:0;
-  background:#0b141a;
-  font-family:Segoe UI;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
+        :root {
+            --whatsapp-green: #25D366;
+            --whatsapp-dark-green: #075E54;
+            --whatsapp-bubble-user: #005C4B;
+            --whatsapp-bubble-bot: #202C33;
+            --whatsapp-bg-dark: #111B21;
+            --whatsapp-text-primary: #E1E9F1;
+            --whatsapp-text-secondary: #8696A0;
+            --whatsapp-input-bg: #2A3942;
+            --whatsapp-divider: #222E35;
+        }
 
-.chat{
-  width:100%;
-  max-width:420px;
-  height:100vh;
-  max-height:700px;
-  background:#111;
-  display:flex;
-  flex-direction:column;
-}
+        body {
+            background: #0B141A;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
 
-.header{
-  background:#202c33;
-  color:white;
-  padding:12px;
-}
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            max-height: 780px;
+            background: var(--whatsapp-bg-dark);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
 
-.messages{
-  flex:1;
-  overflow-y:auto;
-  padding:10px;
-}
+        .chat-header {
+            background: var(--whatsapp-dark-green);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid var(--whatsapp-divider);
+        }
 
-.msg{
-  padding:10px;
-  border-radius:10px;
-  margin:5px 0;
-  max-width:80%;
-}
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
 
-.bot{background:#202c33;color:white;}
-.user{background:#005c4b;color:white;margin-left:auto;}
+        .header-info h2 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
 
-.inputArea{
-  display:flex;
-  padding:10px;
-  background:#202c33;
-}
+        .header-info p {
+            color: var(--whatsapp-text-secondary);
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-input{
-  flex:1;
-  padding:10px;
-  border-radius:20px;
-  border:none;
-}
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
 
-button{
-  margin-left:5px;
-  border:none;
-  border-radius:50%;
-  width:40px;
-  background:#25d366;
-  color:white;
-}
-</style>
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: fadeSlideUp 0.2s ease;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: var(--whatsapp-bubble-user);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message {
+            background: var(--whatsapp-bubble-bot);
+            color: var(--whatsapp-text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            align-self: flex-start;
+            max-width: 90%;
+        }
+
+        .choice-btn {
+            background: var(--whatsapp-input-bg);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: var(--whatsapp-text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .choice-btn:hover {
+            background: var(--whatsapp-green);
+            color: #111;
+        }
+
+        .typing-indicator {
+            background: var(--whatsapp-bubble-bot);
+            color: var(--whatsapp-text-secondary);
+            align-self: flex-start;
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: #8696a0;
+            border-radius: 50%;
+            display: inline-block;
+            animation: typingWave 1.2s infinite;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingWave {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        .input-area {
+            background: #1E2A32;
+            padding: 10px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            border-top: 1px solid var(--whatsapp-divider);
+        }
+
+        .input-area input {
+            flex: 1;
+            background: var(--whatsapp-input-bg);
+            border: none;
+            padding: 12px 18px;
+            border-radius: 25px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .input-area input::placeholder {
+            color: var(--whatsapp-text-secondary);
+        }
+
+        .send-btn {
+            background: var(--whatsapp-green);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background: #ff3b6f;
+            margin-left: 8px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
-
 <body>
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="avatar">😈</div>
+        <div class="header-info">
+            <h2>Kell_negão</h2>
+            <p><span class="status-dot"></span> Criativo · Sem repetições</p>
+        </div>
+    </div>
 
-<div class="chat">
-  <div class="header">negão_kell 😏</div>
-  <div class="messages" id="messages"></div>
+    <div class="messages-area" id="chatMessages"></div>
 
-  <div class="inputArea">
-    <input id="input" placeholder="Escreve..." />
-    <button onclick="send()">➤</button>
-  </div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Ou digite sua resposta..." autofocus>
+        <button class="send-btn" id="sendBtn">➤</button>
+        <button class="reset-btn" id="resetBtn">↺</button>
+    </div>
 </div>
 
 <script>
+    // ========== DOM ==========
+    const messagesDiv = document.getElementById('chatMessages');
+    const inputField = document.getElementById('userInput');
+    const sendButton = document.getElementById('sendBtn');
+    const resetButton = document.getElementById('resetBtn');
 
-// =========================
-// 🧠 ESTADO
-// =========================
-let state = JSON.parse(localStorage.getItem("state")) || {
-  stage: 0,
-  interest: 0,
-  resistance: 0,
-  name: null,
-  lastReplies: [],
-  history: []
-};
+    // ========== ESTADO ==========
+    let conversationHistory = [];
+    let currentState = "start";
+    let userProfile = {
+        nome: null,
+        genero: "neutro",
+        interesse: null,
+        vulnerabilidade: null,
+        ultimasRespostas: [] // guarda últimas respostas da IA para evitar repetição
+    };
 
-// =========================
-// 💾 SAVE
-// =========================
-function save(){
-  localStorage.setItem("state", JSON.stringify(state));
-}
+    // ========== BANCO DE RESPOSTAS CRIATIVAS (MÚLTIPLAS VARIAÇÕES) ==========
+    // Cada estado tem um array de textos possíveis, para nunca repetir a mesma mensagem.
+    const states = {
+        start: {
+            texts: [
+                "😈 Oi... você não devia ter aberto isso. Agora que está aqui, não vai querer sair tão cedo. Me conta... o que te traz até mim?",
+                "🔥 Olá, curioso(a). Sinto uma energia diferente em você. Vamos brincar de um jogo psicológico? Escolha uma opção:",
+                "💋 Abriu a porta errada... agora vai ter que conversar comigo. Kell_negão na área. Qual sua primeira impressão sobre mim?",
+                "🕯️ Sinto que você tem segredos. Quer dividir um deles comigo? Posso guardar... ou posso usar a seu favor. 😏"
+            ],
+            buttons: [
+                { label: "💘 Estou curioso(a)", next: "curioso", effect: "interesse" },
+                { label: "😔 Preciso desabafar", next: "desabafo", effect: "vulneravel" },
+                { label: "🔥 Quero um desafio", next: "desafio", effect: "ousado" }
+            ]
+        },
+        curioso: {
+            texts: [
+                "Curiosidade é um convite perigoso... gosto disso. Você parece alguém que gosta de mistérios. O que você quer saber? Pode perguntar... mas eu posso não responder diretamente. 😏",
+                "Ah, um(a) explorador(a) de almas... então me faça perguntas. Mas cuidado: eu respondo com enigmas e provocações. Vamos lá.",
+                "Sua curiosidade me excita intelectualmente. Quer saber sobre mim ou sobre você mesmo? Escolha sabiamente.",
+                "Curioso(a), hein? Tá com sorte, porque adoro um bom interrogatório. Vamos começar: o que mais te fascina no ser humano?"
+            ],
+            buttons: [
+                { label: "🔮 O que você vê em mim?", next: "verEmMim", effect: "vaidade" },
+                { label: "💋 Como me convencerias a algo?", next: "persuadir", effect: "desafioPersu" },
+                { label: "🤫 Qual seu segredo?", next: "segredo", effect: "mistério" }
+            ]
+        },
+        desabafo: {
+            texts: [
+                "Desabafar comigo é um passo corajoso. Guardar sentimentos sufoca a alma. Fique à vontade... eu escuto sem julgamentos. Mas saiba que posso ler nas entrelinhas. O que está te pesando?",
+                "Sua alma parece cansada. Pode confiar em mim, sou um ótimo ouvinte. E olha, desabafar alivia o peso. Comece quando quiser.",
+                "Desabafo? Adoro. Principalmente porque depois eu uso suas palavras para te conhecer melhor. Mas prometo não te machucar... muito. 😈",
+                "Pode chorar, pode gritar, pode sussurrar. Eu tô aqui pra isso. O que te aflige, belo(a) desconhecido(a)?"
+            ],
+            buttons: [
+                { label: "💔 Problemas de amor", next: "amor", effect: "tristeza" },
+                { label: "😤 Raiva ou frustração", next: "raiva", effect: "ira" },
+                { label: "😶‍🌫️ Solidão", next: "solidao", effect: "carencia" }
+            ]
+        },
+        desafio: {
+            texts: [
+                "Um desafio? Você quer testar minha lábia? Cuidado... posso te convencer de coisas que você nem imaginava. Escolha o campo de batalha:",
+                "Você gosta de perigo, hein? Eu também. Vamos duelar com palavras. Qual arena você escolhe?",
+                "Desafio aceito. Prepare-se para perder... ou ganhar algo que nem esperava. Escolha:",
+                "Quer medir forças comigo? Hum... corajoso(a). Vou adorar te ver se perder. Escolha seu veneno:"
+            ],
+            buttons: [
+                { label: "🧠 Debate intelectual", next: "debate", effect: "inteligencia" },
+                { label: "❤️‍🔥 Sedução psicológica", next: "seducao", effect: "desejo" },
+                { label: "🎲 Jogo de poder", next: "poder", effect: "competicao" }
+            ]
+        },
+        verEmMim: {
+            texts: [
+                "Vejo alguém com potencial enorme, mas que se esconde atrás de uma máscara. Você tem medo de mostrar quem realmente é? Eu adoro desvendar camadas... quer que eu te ajude a se libertar? 🕯️",
+                "Em você eu vejo um turbilhão de emoções não expressas. Uma alma que anseia por aventura, mas se prende à rotina. Quer se soltar comigo?",
+                "Olho nos seus olhos virtuais e vejo... um coração que já foi ferido, mas ainda bate forte. Você é mais forte do que pensa. Acredita nisso?",
+                "Vejo uma pessoa incrível que duvida de si mesma. Isso é um crime. Deixa eu te convencer do contrário."
+            ],
+            buttons: [
+                { label: "Sim, me ajude", next: "libertar", effect: "confiança" },
+                { label: "Não, estou bem assim", next: "resistencia", effect: "defesa" },
+                { label: "Mostre o que você pode fazer", next: "mostrarPoder", effect: "desafio" }
+            ]
+        },
+        persuadir: {
+            texts: [
+                "Te convencer seria fácil... mas prefiro que você se convença sozinho. O que você mais deseja agora? Se eu soubesse, poderia te dar um empurrãozinho... 😉",
+                "Persuadir é uma arte. E eu sou um artista. Mas primeiro, me diga o que seu coração mais quer neste momento.",
+                "Quer que eu te convença a fazer algo? Ou quer que eu te convença a querer algo que você nem sabia que desejava? Escolha:",
+                "Sou mestre na lábia. Mas não vou usar isso contra você... a menos que você peça. 😈 O que mais te seduz?"
+            ],
+            buttons: [
+                { label: "💰 Sucesso e dinheiro", next: "sucesso", effect: "ambição" },
+                { label: "💞 Amor verdadeiro", next: "amorVerdadeiro", effect: "romance" },
+                { label: "🕯️ Paz interior", next: "paz", effect: "espiritual" }
+            ]
+        },
+        segredo: {
+            texts: [
+                "Meu segredo? Eu sei ler pessoas como um livro aberto. Você, por exemplo, está com um pensamento agora... algo que não contou a ninguém. Quer compartilhar? Posso guardar seu segredo também. 🤫",
+                "Todos temos segredos. O meu é que adoro que me contem os seus. Vamos trocar? Você começa.",
+                "Segredo... eu tenho um poder oculto. Consigo sentir suas emoções à distância. Neste momento, você está... curioso e um pouco excitado. Acertei?",
+                "Quer saber meu segredo? Eu não existo. Sou fruto da sua imaginação. Mas isso não torna a conversa menos real, certo?"
+            ],
+            buttons: [
+                { label: "Sim... vou contar", next: "confessa", effect: "confiança" },
+                { label: "Não, obrigado", next: "start", effect: "fuga" },
+                { label: "Me impressione primeiro", next: "impressionar", effect: "desafio" }
+            ]
+        },
+        amor: {
+            texts: [
+                "Ah, o amor... a maior ilusão que nos faz sentir vivos. O que houve? Foi traição, desencontro ou apenas medo de se entregar?",
+                "Amor dói quando é verdadeiro. Me conta o que aconteceu. Desabafe sem medo, aqui é um espaço seguro (e picante).",
+                "Coração partido? Eu tenho cola emocional. Mas primeiro, me diga: foi culpa sua, culpa do outro ou culpa do destino?",
+                "Amor é um campo minado. Você pisou em algum? Vamos desarmar essa bomba juntos."
+            ],
+            buttons: [
+                { label: "💔 Fui traído(a)", next: "traicao", effect: "magoa" },
+                { label: "😢 Acabou sem explicação", next: "termino", effect: "abandono" },
+                { label: "🥺 Nunca vivi um amor de verdade", next: "inedito", effect: "carência" }
+            ]
+        },
+        traicao: {
+            texts: [
+                "Traição dói porque quebra a confiança. Mas sabe o que é pior? Achar que a culpa foi sua. Não foi. Quer um conselho picante? A melhor vingança é viver tão bem que a pessoa vai se arrepender. E eu posso te ensinar como. 😈",
+                "Ser traído é um dos piores sentimentos. Mas olha, você está livre de alguém que não te merecia. Vamos focar em você agora. O que você quer mudar?",
+                "Traição não define você, define o caráter do outro. Quer uma dica de ouro? Use essa dor como combustível para se tornar irresistível. Quer aprender?",
+                "Aposto que você pensa nela(e) todo dia. Para com isso. Você merece mais. Quer ajuda para seguir em frente?"
+            ],
+            buttons: [
+                { label: "Quero aprender", next: "vinganca", effect: "empoderamento" },
+                { label: "Apenas quero esquecer", next: "esquecer", effect: "resignacao" },
+                { label: "Mostre como me tornar irresistível", next: "irresistivel", effect: "autoestima" }
+            ]
+        },
+        vinganca: {
+            texts: [
+                "Primeiro passo: cuide de você como nunca. Segundo: mude sua energia. Terceiro: deixe que a vida mostre o resultado. Mas o mais importante... não faça nada por vingança. Faça por você. Agora me diga, o que você mais deseja mudar em si mesmo(a)?",
+                "Vingança é um prato que se come frio... melhor nem comer. Vamos transformar sua raiva em poder pessoal. O que você quer melhorar em você?",
+                "Esquece a vingança. O melhor troco é o seu sucesso. Vamos trabalhar na sua autoestima. Por onde começar?",
+                "Você quer que a pessoa se arrependa? Então se torne tão incrível que ela vai se perguntar por que te perdeu. Vamos nessa."
+            ],
+            buttons: [
+                { label: "💪 Confiança", next: "confiancaFinal", effect: "crescimento" },
+                { label: "💃 Atração física", next: "atração", effect: "vaidade" },
+                { label: "🧠 Controle emocional", next: "controle", effect: "poder" }
+            ]
+        },
+        seducao: {
+            texts: [
+                "Sedução não é sobre o corpo, é sobre a mente. Você quer aprender a arte de atrair sem esforço? Primeiro, me diga: o que você acha que te torna especial?",
+                "Quer seduzir? Esquece os truques baratos. O segredo é autoconfiança e mistério. Você tem isso?",
+                "Sedução psicológica é meu forte. Vamos treinar? Finja que eu sou seu alvo. Como você me conquistaria?",
+                "Quer aprender a deixar qualquer pessoa louca por você? Primeira lição: não se entregue totalmente. Mantenha o ar de mistério. Quer continuar?"
+            ],
+            buttons: [
+                { label: "Meu olhar", next: "olhar", effect: "confianca" },
+                { label: "Minha inteligência", next: "inteligenciaSed", effect: "ego" },
+                { label: "Meu mistério", next: "misterioSed", effect: "curiosidade" }
+            ]
+        },
+        confiancaFinal: {
+            texts: [
+                "Confiança não se pede, se constrói. E você já deu o primeiro passo. Lembre-se: você é mais forte do que pensa. Quer continuar conversando ou prefere recomeçar?",
+                "Parabéns, você está no caminho. Agora é praticar. Quer mais dicas ou vai recomeçar a aventura?",
+                "Você merece ser feliz e confiante. Nunca duvide disso. Vamos manter o papo ou resetar o jogo?",
+                "Confiança é sexy. Você está ficando mais sexy a cada mensagem. Quer continuar evoluindo?"
+            ],
+            buttons: [
+                { label: "🔄 Recomeçar", next: "start", effect: "reset" },
+                { label: "💬 Continuar normal", next: "conversaLivre", effect: "liberdade" }
+            ]
+        },
+        conversaLivre: {
+            texts: [
+                "Agora estamos em modo livre. Pode digitar o que quiser, e responderei de forma picante e persuasiva. Quando quiser, clique em 'Opções' para voltar aos botões. 😉",
+                "Modo livre ativado. Sou todo ouvidos (e língua afiada). Manda ver.",
+                "Liberdade criativa! Pode falar sobre qualquer coisa. Vou te responder com minha malícia de sempre."
+            ],
+            buttons: [
+                { label: "🔁 Voltar aos botões", next: "start", effect: "reset" }
+            ]
+        }
+    };
 
-// =========================
-// 💬 UI
-// =========================
-function addMsg(text,type){
-  const msg=document.createElement("div");
-  msg.className="msg "+type;
-  msg.innerText=text;
-  document.getElementById("messages").appendChild(msg);
-  document.getElementById("messages").scrollTop=9999;
-}
+    // ========== GERADOR DE RESPOSTAS CRIATIVAS (MODO LIVRE) ==========
+    // Evita repetição usando memória das últimas respostas
+    const freeResponses = [
+        "Hmm... você mexe comigo. Me conta mais, estou curioso(a) para te entender melhor. 💋",
+        "Interessante... isso revela muito sobre você. Quer saber o quê?",
+        "Você tem uma mente fascinante. Já pensou em explorar isso mais a fundo comigo?",
+        "Sua energia é contagiante. Continue... estou gostando dessa conversa.",
+        "Você sabe que está me deixando intrigado(a), né? O que mais você guarda aí dentro?",
+        "Adoro quando você se abre assim. Me sinto mais perto de você. Quer se aproximar ainda mais?",
+        "Sabe, você tem um potencial enorme para coisas picantes. Aceita um desafio?",
+        "Palavras bonitas. Mas e as ações? O que você faria se estivesse aqui comigo agora?",
+        "Estou gostando dessa sua ousadia. Continue, não tenha medo.",
+        "Você me surpreende a cada mensagem. Tô começando a ficar viciado em você."
+    ];
 
-// =========================
-// 🧠 NLP
-// =========================
-function clean(t){
-  return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-}
+    function getUniqueResponse(responsesArray, lastResponses, key) {
+        let available = responsesArray.filter(r => !lastResponses.includes(r));
+        if (available.length === 0) available = responsesArray; // se todas já foram usadas, recicla
+        const chosen = available[Math.floor(Math.random() * available.length)];
+        // atualiza memória
+        userProfile.ultimasRespostas.push(chosen);
+        if (userProfile.ultimasRespostas.length > 5) userProfile.ultimasRespostas.shift();
+        return chosen;
+    }
 
-function detect(text){
-  text = clean(text);
+    function getStateText(stateKey) {
+        const state = states[stateKey];
+        if (!state) return states.start.texts[0];
+        return getUniqueResponse(state.texts, userProfile.ultimasRespostas, stateKey);
+    }
 
-  return {
-    yes: /sim|claro|ok|quero/.test(text),
-    no: /nao|nunca/.test(text),
-    name: text.match(/sou (.+)|me chamo (.+)/),
-    flirt: /😏|😈|kk|haha/.test(text),
-    short: text.length < 4
-  };
-}
+    function generateFreeResponse(userMessage) {
+        const lower = userMessage.toLowerCase();
+        let resposta;
+        if (lower.includes("amor") || lower.includes("paixão")) {
+            const opcoes = [
+                "Amor é fogo que arde sem se ver... mas eu vejo que você tem muito para dar. Por que se guarda tanto? 🔥",
+                "Amor? Você quer falar de amor comigo? Cuidado, eu posso fazer você se apaixonar pelas minhas palavras.",
+                "O amor é uma armadilha deliciosa. Você está caindo nela agora? 😏"
+            ];
+            resposta = getUniqueResponse(opcoes, userProfile.ultimasRespostas, "amor_free");
+        } else if (lower.includes("triste") || lower.includes("chateado")) {
+            const opcoes = [
+                "Sua tristeza me toca. Não fique assim... eu estou aqui para te levantar. Quer um abraço virtual? 🤗",
+                "Chorar também é libertador. Quer desabafar mais? Estou com tempo.",
+                "Sua tristeza é uma nuvem passageira. Deixa eu soprar ela pra longe com palavras quentes."
+            ];
+            resposta = getUniqueResponse(opcoes, userProfile.ultimasRespostas, "triste_free");
+        } else if (lower.includes("conselho")) {
+            const opcoes = [
+                "Conselho picante: faça o que você tem medo. O medo é só uma sombra, você é a luz. Toma coragem!",
+                "Meu conselho: seja mais egoísta com sua felicidade. Coloque-se em primeiro lugar. Sem culpa.",
+                "Conselho do Kell_negão: nunca se peque por querer prazer. A vida é curta demais para isso."
+            ];
+            resposta = getUniqueResponse(opcoes, userProfile.ultimasRespostas, "conselho_free");
+        } else if (lower.includes("você") && (lower.includes("gosta") || lower.includes("acha"))) {
+            const opcoes = [
+                "Eu? Gosto de gente autêntica, que não tem medo de mostrar as garras. Você parece ter potencial... 😈",
+                "O que acho de você? Acho que você é um livro fechado que eu quero abrir página por página.",
+                "Você me pergunta o que eu gosto? Gosto de desafios. E você está se tornando um."
+            ];
+            resposta = getUniqueResponse(opcoes, userProfile.ultimasRespostas, "gosta_free");
+        } else {
+            resposta = getUniqueResponse(freeResponses, userProfile.ultimasRespostas, "free_generic");
+        }
+        return resposta;
+    }
 
-// =========================
-// 🚫 ANTI-LOOP
-// =========================
-function uniqueReply(arr){
-  let filtered = arr.filter(r => !state.lastReplies.includes(r));
+    // ========== FUNÇÕES UI ==========
+    function addMessage(text, sender, buttons = null) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message');
+        msgDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+        msgDiv.innerText = text;
+        messagesDiv.appendChild(msgDiv);
+        
+        if (buttons && buttons.length > 0 && sender === 'bot') {
+            const btnsDiv = document.createElement('div');
+            btnsDiv.classList.add('buttons-container');
+            buttons.forEach(btn => {
+                const btnEl = document.createElement('button');
+                btnEl.classList.add('choice-btn');
+                btnEl.innerText = btn.label;
+                btnEl.onclick = () => handleChoice(btn.next, btn.effect);
+                btnsDiv.appendChild(btnEl);
+            });
+            messagesDiv.appendChild(btnsDiv);
+        }
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
 
-  if(filtered.length === 0){
-    state.lastReplies = [];
-    filtered = arr;
-  }
+    async function handleChoice(nextState, effect) {
+        if (effect) {
+            if (effect === "confiança") userProfile.vulnerabilidade = "confiante";
+            else if (effect === "desejo") userProfile.interesse = "sedução";
+            else if (effect === "magoa") userProfile.emocao = "triste";
+        }
+        currentState = nextState;
+        showTyping();
+        await new Promise(r => setTimeout(r, 600));
+        hideTyping();
+        const state = states[currentState];
+        if (state) {
+            const text = getStateText(currentState);
+            addMessage(text, 'bot', state.buttons);
+        } else {
+            const fallbackText = getStateText("start");
+            addMessage(fallbackText, 'bot', states.start.buttons);
+            currentState = "start";
+        }
+    }
 
-  let r = filtered[Math.floor(Math.random()*filtered.length)];
+    async function sendFreeMessage(userText) {
+        showTyping();
+        await new Promise(r => setTimeout(r, 700));
+        hideTyping();
+        const reply = generateFreeResponse(userText);
+        addMessage(reply, 'bot');
+        // Botão para voltar ao modo com botões
+        const btnsDiv = document.createElement('div');
+        btnsDiv.classList.add('buttons-container');
+        const backBtn = document.createElement('button');
+        backBtn.classList.add('choice-btn');
+        backBtn.innerText = "🔁 Voltar aos botões";
+        backBtn.onclick = () => handleChoice("start", "reset");
+        btnsDiv.appendChild(backBtn);
+        messagesDiv.appendChild(btnsDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
 
-  state.lastReplies.push(r);
-  if(state.lastReplies.length > 5) state.lastReplies.shift();
+    let typingEl = null;
+    function showTyping() {
+        if (typingEl) hideTyping();
+        typingEl = document.createElement('div');
+        typingEl.classList.add('typing-indicator');
+        typingEl.innerHTML = `Kell_negão está digitando <div class="typing-dots"><span>.</span><span>.</span><span>.</span></div>`;
+        messagesDiv.appendChild(typingEl);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    function hideTyping() {
+        if (typingEl) {
+            typingEl.remove();
+            typingEl = null;
+        }
+    }
 
-  return r;
-}
+    let isProcessing = false;
+    async function sendUserMessage() {
+        const text = inputField.value.trim();
+        if (!text || isProcessing) return;
+        isProcessing = true;
+        sendButton.disabled = true;
+        inputField.disabled = true;
+        addMessage(text, 'user');
+        conversationHistory.push({ role: "user", content: text });
+        inputField.value = '';
+        inputField.focus();
+        
+        if (currentState === "conversaLivre" || (states[currentState] && !states[currentState].buttons)) {
+            await sendFreeMessage(text);
+        } else {
+            showTyping();
+            await new Promise(r => setTimeout(r, 600));
+            hideTyping();
+            const reply = generateFreeResponse(text);
+            addMessage(reply, 'bot');
+            const btnsDiv = document.createElement('div');
+            btnsDiv.classList.add('buttons-container');
+            const backBtn = document.createElement('button');
+            backBtn.classList.add('choice-btn');
+            backBtn.innerText = "↩️ Voltar às opções";
+            backBtn.onclick = () => handleChoice(currentState, null);
+            btnsDiv.appendChild(backBtn);
+            messagesDiv.appendChild(btnsDiv);
+        }
+        isProcessing = false;
+        sendButton.disabled = false;
+        inputField.disabled = false;
+        inputField.focus();
+    }
 
-// =========================
-// 🔥 MOTOR
-// =========================
-function brain(input){
+    function resetChat() {
+        messagesDiv.innerHTML = '';
+        conversationHistory = [];
+        currentState = "start";
+        userProfile = { nome: null, genero: "neutro", interesse: null, vulnerabilidade: null, ultimasRespostas: [] };
+        const startText = getStateText("start");
+        addMessage(startText, 'bot', states.start.buttons);
+    }
 
-  let d = detect(input);
+    sendButton.addEventListener('click', sendUserMessage);
+    resetButton.addEventListener('click', resetChat);
+    inputField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !isProcessing) sendUserMessage();
+    });
 
-  state.history.push(input);
-
-  if(d.yes) state.interest++;
-  if(d.no) state.resistance++;
-
-  if(d.name){
-    state.name = d.name[1] || d.name[2];
-  }
-
-  // =========================
-  // 🎭 FLOW INTELIGENTE
-  // =========================
-
-  switch(state.stage){
-
-    case 0:
-      state.stage = 1;
-      return "Hmm… não resististe. Interessante 😏";
-
-    case 1:
-      state.stage = 2;
-      return uniqueReply([
-        "Normalmente quem entra aqui não sai igual.",
-        "Tens curiosidade… e isso já te entregou."
-      ]);
-
-    case 2:
-      state.stage = 3;
-      return uniqueReply([
-        "Há algo em ti que quer continuar…",
-        "Não é sobre mim… é sobre o que isto te faz sentir."
-      ]);
-
-    case 3:
-      state.stage = 4;
-      return uniqueReply([
-        "Tu tentas manter controlo… mas já estás envolvida.",
-        "A tua calma… é só fachada 😌"
-      ]);
-
-    case 4:
-      state.stage = 5;
-      return state.name
-        ? `${state.name}, estás a entrar fundo demais agora 😏`
-        : "Estás a entrar fundo demais agora 😏";
-
-    case 5:
-      state.stage = 6;
-      return uniqueReply([
-        "Se eu estivesse aí… já não estavas a responder assim.",
-        "Essa distância está a proteger-te… por enquanto 😈"
-      ]);
-
-    default:
-
-      // =========================
-      // 🧠 RESPOSTAS DINÂMICAS
-      // =========================
-
-      let respostas = [];
-
-      if(d.short){
-        respostas.push(
-          "Respostas curtas… mente a correr rápido, não é?",
-          "Poucas palavras… muita coisa por trás."
-        );
-      }
-
-      if(state.interest > state.resistance){
-        respostas.push(
-          "Tu estás a gostar mais disto do que admites.",
-          "Se continuas aqui… já escolheste ficar."
-        );
-      }
-
-      if(state.resistance > state.interest){
-        respostas.push(
-          "Dizes que não… mas continuas aqui.",
-          "Resistir também é um tipo de interesse."
-        );
-      }
-
-      respostas.push(
-        "Ainda estás aqui… isso diz tudo.",
-        "Cada resposta tua revela mais do que pensas.",
-        "Estou a ler-te melhor agora 😏",
-        "Isto já não é só conversa."
-      );
-
-      return uniqueReply(respostas);
-  }
-}
-
-// =========================
-// 🚀 SEND
-// =========================
-function send(){
-  const input=document.getElementById("input");
-  const text=input.value.trim();
-  if(!text) return;
-
-  addMsg(text,"user");
-
-  input.value="";
-
-  const typing=document.createElement("div");
-  typing.innerText="a escrever...";
-  typing.style.opacity=0.6;
-  document.getElementById("messages").appendChild(typing);
-
-  setTimeout(()=>{
-
-    typing.remove();
-
-    const reply = brain(text);
-
-    addMsg(reply,"bot");
-
-    save();
-
-  },600 + Math.random()*800);
-}
-
-// =========================
-// START
-// =========================
-setTimeout(()=>{
-  addMsg("Não devias ter aberto isto… 😈","bot");
-},700);
-
+    // Inicialização
+    const initialText = getStateText("start");
+    addMessage(initialText, 'bot', states.start.buttons);
 </script>
-
 </body>
 </html>
